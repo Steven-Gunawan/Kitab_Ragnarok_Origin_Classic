@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>KITABROOC — Ragnarok Origin Classic</title>
+  <!--
+    =============================================
+    STRUKTUR FOLDER YANG DIBUTUHKAN:
+    =============================================
+    kitabrooc/
+    ├── kitabrooc.html     ← file ini
+    ├── kitabrooc.css      ← file style
+    ├── kitabrooc.js       ← file data + logika
+    └── assets/
+        ├── jobs/
+        │   ├── lord_knight.png
+        │   ├── high_wizard.png
+        │   ├── paladin.png
+        │   ├── professor.png
+        │   ├── mastersmith.png
+        │   ├── biochemist.png
+        │   ├── summoner.png
+        │   ├── high_priest.png
+        │   ├── champion.png
+        │   ├── assassin_cross.png
+        │   ├── stalker.png
+        │   ├── sniper.png
+        │   └── minstrel.png
+        └── cards/
+            ├── dracula.png
+            ├── osiris.png
+            ├── turtle_general.png
+            ├── thara_frog.png
+            ├── hydra.png
+            ├── matyr.png
+            ├── sohee.png
+            ├── verit.png
+            └── ... (semua kartu)
+
+    SUMBER GAMBAR RAGNAROK:
+    - https://divine-pride.net (resmi, pilih "items")
+    - https://ratemyserver.net/index.php?page=drop_db (card images)
+    - Extract dari game client: /data/texture/À¯ÀúÀÎÅÍÆäÀÌ½º/item/
+    =============================================
+  -->
+  <link rel="stylesheet" href="kitabrooc.css"/>
+</head>
+<body>
+
+<!-- =============================================
+     HEADER + NAV
+     ============================================= -->
+<div class="hdr">
+  <div>
+    <div class="logo">KITABROOC</div>
+    <div class="logo-s">RAGNAROK ORIGIN CLASSIC</div>
+  </div>
+
+  <!-- Global Search -->
+  <div class="gsearch-wrap">
+    <span class="gsearch-ico">🔍</span>
+    <input id="gsearch" class="gsearch" type="text" placeholder="Cari job, kartu, skill..." oninput="onGSearch(this.value)"/>
+    <div id="gsearch-results" class="gsearch-results"></div>
+  </div>
+
+  <div class="nav">
+    <button class="nb active" onclick="gp('tierlist',this)">Tier List</button>
+    <button class="nb" onclick="gp('tree',this)">Skill Tree</button>
+    <button class="nb" onclick="gp('custombuild',this)">Custom Build</button>
+    <button class="nb" onclick="gp('carddb',this)">Card DB</button>
+  </div>
+</div>
+
+<!-- =============================================
+     TIER LIST PAGE
+     ============================================= -->
+<div id="page-tierlist" class="page active">
+  <div class="hero">
+    <div class="hero-ico">⚔</div>
+    <div class="hero-t">Job Tier List</div>
+    <div class="hero-d">Klik job manapun untuk melihat detail lengkap: deskripsi, skill tree, build PVE & PVP, rekomendasi kartu, dan komposisi party.</div>
+    <div class="hero-s">
+      <div><div class="hs-n">13</div><div class="hs-l">Total Job</div></div>
+      <div><div class="hs-n">120 SP</div><div class="hs-l">Total Skill Points</div></div>
+      <div><div class="hs-n">PVE + PVP</div><div class="hs-l">Kategori</div></div>
+    </div>
+  </div>
+  <div class="frow" id="tier-filter-row">
+    <span class="flbl">Mode :</span>
+    <button class="fb active" onclick="stm('all',this)">Semua</button>
+    <button class="fb" onclick="stm('pve',this)">PvE / Grind</button>
+    <button class="fb" onclick="stm('mvp',this)">MVP Hunt</button>
+    <button class="fb" onclick="stm('woe',this)">WoE / PvP</button>
+  </div>
+  <div id="tier-rows"></div>
+</div>
+
+<!-- =============================================
+     SKILL TREE PAGE
+     ============================================= -->
+<div id="page-tree" class="page">
+  <div class="hero">
+    <div class="hero-ico">🌳</div>
+    <div class="hero-t">Skill Tree Simulator</div>
+    <div class="hero-d">Setiap job memiliki 3 tahap: Job Awal → Job 2 → Trans Job. Masing-masing 40 SP, total 120 SP. Klik +/- untuk mengatur level skill tiap tier.</div>
+    <div class="hero-s">
+      <div><div class="hs-n">3 Tier</div><div class="hs-l">Per Job</div></div>
+      <div><div class="hs-n">40 + 40 + 40</div><div class="hs-l">SP per Tier</div></div>
+    </div>
+  </div>
+  <div class="tree-wrap">
+    <!-- Job List Panel -->
+    <div class="tree-jlist">
+      <div class="slbl" style="margin-bottom:10px;">Pilih Job</div>
+      <div id="tree-jlist"></div>
+    </div>
+    <!-- Skill Tree Columns -->
+    <div>
+      <div id="tree-cols" class="tree-cols">
+        <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--muted);font-size:14px;">
+          Pilih job dari panel kiri untuk melihat skill tree
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     CUSTOM BUILD PAGE
+     ============================================= -->
+<div id="page-custombuild" class="page">
+  <div class="hero">
+    <div class="hero-ico">🔧</div>
+    <div class="hero-t">Custom Build Simulator</div>
+    <div class="hero-d">Buat build impianmu sendiri — atur stat, pilih skill dari skill tree 3 tier, dan pasang kartu di setiap slot equipment. Export build ke JSON untuk disimpan.</div>
+  </div>
+  <div class="cb-wrap">
+
+    <!-- LEFT PANEL: Stats + Card Slots -->
+    <div>
+      <!-- Stats -->
+      <div class="cb-panel" style="margin-bottom:14px;">
+        <div class="cb-title">📊 Base Stats</div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Atur setiap stat bebas (1–99)</div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#e84444;">STR</span>
+          <input type="range" class="stat-sl" id="cs-str" min="1" max="99" value="1" oninput="updStat('str',this.value)"/>
+          <input type="number" class="stat-in" id="ci-str" value="1" min="1" max="99" oninput="updStatIn('str',this.value)"/>
+        </div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#5bc77a;">AGI</span>
+          <input type="range" class="stat-sl" id="cs-agi" min="1" max="99" value="1" oninput="updStat('agi',this.value)"/>
+          <input type="number" class="stat-in" id="ci-agi" value="1" min="1" max="99" oninput="updStatIn('agi',this.value)"/>
+        </div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#e8883a;">VIT</span>
+          <input type="range" class="stat-sl" id="cs-vit" min="1" max="99" value="1" oninput="updStat('vit',this.value)"/>
+          <input type="number" class="stat-in" id="ci-vit" value="1" min="1" max="99" oninput="updStatIn('vit',this.value)"/>
+        </div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#a478e8;">INT</span>
+          <input type="range" class="stat-sl" id="cs-int" min="1" max="99" value="1" oninput="updStat('int',this.value)"/>
+          <input type="number" class="stat-in" id="ci-int" value="1" min="1" max="99" oninput="updStatIn('int',this.value)"/>
+        </div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#4a9fe8;">DEX</span>
+          <input type="range" class="stat-sl" id="cs-dex" min="1" max="99" value="1" oninput="updStat('dex',this.value)"/>
+          <input type="number" class="stat-in" id="ci-dex" value="1" min="1" max="99" oninput="updStatIn('dex',this.value)"/>
+        </div>
+        <div class="stat-row2">
+          <span class="stat-lbl" style="color:#e8c97a;">LUK</span>
+          <input type="range" class="stat-sl" id="cs-luk" min="1" max="99" value="1" oninput="updStat('luk',this.value)"/>
+          <input type="number" class="stat-in" id="ci-luk" value="1" min="1" max="99" oninput="updStatIn('luk',this.value)"/>
+        </div>
+      </div>
+
+      <!-- Card Slots -->
+      <div class="cb-panel">
+        <div class="cb-title">🃏 Card Slots</div>
+        <div class="card-slot"><div class="cs-lbl">⚔ Weapon</div><select class="cs-sel" id="ccs-weapon" onchange="updCard('weapon',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">🛡 Shield</div><select class="cs-sel" id="ccs-shield" onchange="updCard('shield',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">🥋 Armor</div><select class="cs-sel" id="ccs-armor" onchange="updCard('armor',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">👒 Headgear</div><select class="cs-sel" id="ccs-head" onchange="updCard('head',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">🧥 Garment</div><select class="cs-sel" id="ccs-garment" onchange="updCard('garment',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">👟 Footgear</div><select class="cs-sel" id="ccs-foot" onchange="updCard('foot',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">💍 Accessory 1</div><select class="cs-sel" id="ccs-acc1" onchange="updCard('acc1',this.value)"></select></div>
+        <div class="card-slot"><div class="cs-lbl">💍 Accessory 2</div><select class="cs-sel" id="ccs-acc2" onchange="updCard('acc2',this.value)"></select></div>
+      </div>
+    </div>
+
+    <!-- CENTER PANEL: Job + Skill Tree -->
+    <div>
+      <div class="cb-panel" style="margin-bottom:14px;">
+        <div class="cb-title">⚔ Pilih Job</div>
+        <div class="cb-job-grid" id="cb-jgrid"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div class="slbl" style="margin:0;">Skill Tree (120 SP Total)</div>
+          <button class="btn-reset" onclick="resetCBSkills()">↺ Reset</button>
+        </div>
+        <div id="cb-sp-display" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+      </div>
+      <div class="cb-tree-wrap">
+        <div id="cb-tree-cols" class="tree-cols">
+          <div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">
+            Pilih job di atas untuk melihat skill tree
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Build Summary -->
+    <div>
+      <div class="cb-panel" style="position:sticky;top:72px;">
+        <div class="cb-title">📋 Build Summary</div>
+        <div style="margin-bottom:10px;">
+          <div class="cs-lbl">Nama Build</div>
+          <input type="text" id="build-name" placeholder="Nama build kamu..."
+            value="My Build" oninput="updSummary()"
+            style="width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-family:'Nunito',sans-serif;font-size:12px;outline:none;"/>
+        </div>
+        <div id="cb-summary"></div>
+        <button onclick="exportBuild()" class="btn-gold" style="width:100%;margin-top:10px;">
+          📤 Export Build (JSON)
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- =============================================
+     CARD DB PAGE
+     ============================================= -->
+<div id="page-carddb" class="page">
+  <div class="hero">
+    <div class="hero-ico">🃏</div>
+    <div class="hero-t">Card Database</div>
+    <div class="hero-d">Semua kartu di Ragnarok Origin Classic lengkap dengan efek, sumber drop, dan slot equipment.</div>
+  </div>
+  <input id="cq" oninput="renderCards()" placeholder="Cari kartu, efek, atau drop location..."
+    style="width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 15px;border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;outline:none;margin-bottom:13px;"/>
+  <div class="frow" id="ctf">
+    <button class="fb active" onclick="setct('all',this)">Semua</button>
+    <button class="fb" onclick="setct('mvp',this)">MVP</button>
+    <button class="fb" onclick="setct('mini',this)">Mini Boss</button>
+    <button class="fb" onclick="setct('normal',this)">Normal</button>
+  </div>
+  <div class="cg" id="card-grid"></div>
+</div>
+
+<!-- =============================================
+     MODAL — Detail Job
+     ============================================= -->
+<div class="mov" id="modal-ov" onclick="hov(event)">
+  <div class="mdl">
+    <div class="mhdr">
+      <div class="mhdr-top">
+        <div class="m-ico" id="m-i">⚔️</div>
+        <div style="flex:1;">
+          <div class="m-name" id="m-n">—</div>
+          <div class="m-role" id="m-r">—</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;" id="m-tags"></div>
+        </div>
+        <button class="mcls" onclick="closeM()">✕</button>
+      </div>
+      <!-- PVE / PVP / Custom Toggle -->
+      <div class="mode-tgl">
+        <button class="mb pve active" id="btn-pve" onclick="setJMode('pve')">⚔ PVE</button>
+        <button class="mb pvp" id="btn-pvp" onclick="setJMode('pvp')">🏆 PVP</button>
+        <button class="mb cust" id="btn-cust" onclick="setJMode('cust')">🔧 Custom</button>
+      </div>
+      <!-- Tabs -->
+      <div class="mtabs">
+        <button class="mtab active" id="mbt-ov" onclick="swTab('ov',this)">Overview</button>
+        <button class="mtab" id="mbt-sk" onclick="swTab('sk',this)">Skill Tree</button>
+        <button class="mtab" id="mbt-bld" onclick="swTab('bld',this)">Build</button>
+        <button class="mtab" id="mbt-cd" onclick="swTab('cd',this)">Kartu</button>
+        <button class="mtab" id="mbt-pt" onclick="swTab('pt',this)">Party</button>
+      </div>
+    </div>
+    <div class="mbody">
+      <div id="tab-ov" class="tbc active"></div>
+      <div id="tab-sk" class="tbc"></div>
+      <div id="tab-bld" class="tbc"></div>
+      <div id="tab-cd" class="tbc"></div>
+      <div id="tab-pt" class="tbc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Load JS di paling bawah -->
+<script src="kitabrooc.js"></script>
+</body>
+</html>
