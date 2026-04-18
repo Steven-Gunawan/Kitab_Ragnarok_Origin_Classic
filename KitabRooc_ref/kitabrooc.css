@@ -1,0 +1,807 @@
+/* =============================================
+   KITABROOC — Ragnarok Origin Classic
+   CSS Stylesheet — Design v2
+   Inspired by: ragnarok-origin-classic-fan-blog.vercel.app
+   Dark space aesthetic, editorial cards, star bg
+   =============================================
+
+   PANDUAN GANTI GAMBAR:
+   - assets/banner-main.png     → Hero banner utama (1920×400px)
+   - assets/banner-sub.png      → Hero banner kedua (1920×200px)
+   - assets/stars-bg.png        → Background bintang (tileable)
+   - assets/poring.png          → Poring mascot pojok bawah
+   - assets/logo-icon.png       → Icon logo kecil
+   - assets/jobs/[id].png       → Sprite setiap job (lihat kitabrooc.js)
+   - assets/cards/[nama].png    → Foto kartu (lihat kitabrooc.js)
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* =============================================
+   RESET & ROOT VARIABLES
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Color Palette — Dark Space Theme */
+  --bg:        #06060e;       /* latar paling gelap */
+  --bg-2:      #0d0d1a;       /* surface utama */
+  --bg-3:      #12121f;       /* card surface */
+  --bg-4:      #1a1a2e;       /* card hover */
+  --border:    rgba(255,255,255,0.07);
+  --border-2:  rgba(255,255,255,0.12);
+  --border-3:  rgba(255,255,255,0.18);
+
+  /* Text */
+  --text:      #f0efe8;
+  --text-2:    #a8a8c0;
+  --text-3:    #6b6b88;
+
+  /* Brand Accent — Gold */
+  --gold:      #d4a843;
+  --gold-l:    #e8c970;
+  --gold-d:    #8a6a20;
+  --gold-glow: rgba(212, 168, 67, 0.15);
+
+  /* Category Colors */
+  --cat-guide:  #3b82f6;
+  --cat-news:   #ec4899;
+  --cat-pve:    #10b981;
+  --cat-pvp:    #ef4444;
+  --cat-card:   #8b5cf6;
+
+  /* Functional */
+  --green:  #10b981;
+  --red:    #ef4444;
+  --blue:   #3b82f6;
+  --purple: #8b5cf6;
+
+  /* Spacing & Radius */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-full: 9999px;
+
+  /* Font */
+  --font-display: 'Cinzel', serif;
+  --font-body:    'Inter', sans-serif;
+}
+
+html, body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* =============================================
+   STAR BACKGROUND
+   Cara ganti: swap URL gambar bintang di bawah
+   atau biarkan star-dots CSS yang aktif
+   ============================================= */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /*
+    GANTI DENGAN GAMBAR BINTANG:
+    background: url('assets/stars-bg.png') repeat;
+    opacity: 0.4;
+  */
+  /* Star dots CSS (fallback jika tidak ada gambar): */
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 23% 42%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 38% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 28%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 67% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 12%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 72%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 47% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 75% 90%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 18% 95%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 75%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 33% 55%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 20%, rgba(212,168,67,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 35%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 70%, rgba(255,255,255,0.25) 0%, transparent 100%);
+  background-size: 100% 100%;
+}
+
+/* Semua konten di atas pseudo-element */
+.site-header, .page, .modal-overlay, footer { position: relative; z-index: 1; }
+
+/* =============================================
+   SCROLLBAR
+   ============================================= */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--gold-d); border-radius: 3px; }
+
+/* =============================================
+   HEADER / NAVIGATION
+   Mirip ROOCBLOG: logo kiri, nav kanan, tipis & sticky
+   ============================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(6, 6, 14, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+  gap: 16px;
+}
+
+.logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon {
+  /* GANTI: <img src="assets/logo-icon.png" width="28"> */
+  width: 28px; height: 28px;
+  background: var(--gold);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--bg);
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+.logo-text { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--gold); letter-spacing: 2px; line-height: 1; }
+.logo-sub { font-size: 8px; color: var(--text-3); letter-spacing: 3px; font-weight: 500; margin-top: 2px; }
+
+/* Global Search */
+.gsearch-wrap { flex: 1; max-width: 280px; margin: 0 auto; position: relative; }
+.gsearch {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--border-2);
+  color: var(--text); padding: 6px 14px 6px 34px; border-radius: var(--r-full);
+  font-family: var(--font-body); font-size: 12px; outline: none;
+  transition: border-color 0.2s;
+}
+.gsearch::placeholder { color: var(--text-3); }
+.gsearch:focus { border-color: var(--gold); }
+.gsearch-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-3); pointer-events: none; }
+.gsearch-results {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: var(--bg-3); border: 1px solid var(--border-2);
+  border-radius: var(--r-md); overflow: hidden; z-index: 300;
+  max-height: 280px; overflow-y: auto;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+}
+.gsearch-results.open { display: block; }
+.gsr-item { display: flex; align-items: center; gap: 10px; padding: 9px 14px; cursor: pointer; transition: background 0.15s; }
+.gsr-item:hover { background: var(--bg-4); }
+.gsr-ico { font-size: 18px; width: 28px; text-align: center; }
+.gsr-name { font-size: 12px; font-weight: 600; }
+.gsr-type { font-size: 10px; color: var(--text-3); }
+
+/* Nav Buttons */
+.nav { display: flex; gap: 2px; }
+.nb {
+  background: none; border: none; color: var(--text-2);
+  padding: 6px 14px; border-radius: var(--r-sm);
+  cursor: pointer; font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  transition: all 0.15s; letter-spacing: 0.3px;
+}
+.nb:hover { color: var(--text); background: var(--bg-3); }
+.nb.active { color: var(--gold); background: var(--gold-glow); }
+
+/* =============================================
+   PAGES
+   ============================================= */
+.page { display: none; max-width: 1180px; margin: 0 auto; padding: 0 5% 80px; }
+.page.active { display: block; }
+
+/* =============================================
+   HERO SECTION
+   Mirip ROOCBLOG: full-width banner image + overlay text
+   ============================================= */
+.hero-section {
+  margin: 0 -5%;
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 5% 36px;
+  margin-bottom: 48px;
+}
+
+/* Banner image placeholder */
+.hero-banner-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  /*
+    GANTI DENGAN GAMBAR BANNER:
+    background: url('assets/banner-main.png') center/cover no-repeat;
+  */
+  background: linear-gradient(135deg, #0f0824 0%, #1a0f3c 30%, #0d1a3c 60%, #0a0a14 100%);
+}
+/* Overlay gradient supaya text terbaca */
+.hero-banner-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6,6,14,0.96) 0%, rgba(6,6,14,0.5) 50%, rgba(6,6,14,0.2) 100%);
+}
+
+/* Dekorasi bintang terang di hero */
+.hero-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /*
+    GANTI:
+    background: url('assets/stars.png') center/contain no-repeat;
+    opacity: 0.6;
+  */
+  background-image:
+    radial-gradient(2px 2px at 20% 20%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(3px 3px at 50% 10%, rgba(212,168,67,0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 80% 25%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(2px 2px at 35% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(3px 3px at 65% 40%, rgba(212,168,67,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 15% 70%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,0.5) 0%, transparent 100%);
+}
+
+.hero-content { position: relative; z-index: 2; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold-glow); border: 1px solid rgba(212,168,67,0.3);
+  color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: 4px 12px; border-radius: var(--r-full);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  max-width: 600px;
+}
+.hero-title span { color: var(--gold); }
+.hero-desc { color: var(--text-2); font-size: 14px; max-width: 520px; line-height: 1.7; margin-bottom: 20px; }
+.hero-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+.hs { }
+.hs-n { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--gold); }
+.hs-l { font-size: 10px; color: var(--text-3); margin-top: 1px; letter-spacing: 0.5px; }
+
+/* =============================================
+   SECTION LABEL — mirip "Latest Post" heading
+   ============================================= */
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 600; color: #fff;
+}
+.section-link { font-size: 12px; color: var(--text-3); text-decoration: none; transition: color 0.15s; }
+.section-link:hover { color: var(--gold); }
+
+/* =============================================
+   FILTER ROW
+   ============================================= */
+.frow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; }
+.flbl { font-size: 11px; color: var(--text-3); font-weight: 600; }
+.fb {
+  background: var(--bg-3); border: 1px solid var(--border); color: var(--text-2);
+  padding: 4px 14px; border-radius: var(--r-full); cursor: pointer;
+  font-size: 11px; font-weight: 600; font-family: var(--font-body); transition: all 0.15s;
+}
+.fb:hover { border-color: var(--border-3); color: var(--text); }
+.fb.active { color: var(--gold); border-color: var(--gold); background: var(--gold-glow); }
+
+/* =============================================
+   TIER LIST
+   ============================================= */
+.tier-block { margin-bottom: 8px; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+.tier-header { display: flex; align-items: stretch; }
+.tier-badge {
+  width: 52px; min-width: 52px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+}
+.tier-S .tier-badge { background: linear-gradient(160deg, #a00, #e83030); }
+.tier-A .tier-badge { background: linear-gradient(160deg, #9a5000, #d97020); }
+.tier-B .tier-badge { background: linear-gradient(160deg, #7a6000, #c9a020); color: #fff8e0; }
+.tier-C .tier-badge { background: linear-gradient(160deg, #1040a0, #2060d0); }
+.tier-D .tier-badge { background: linear-gradient(160deg, #333, #666); }
+.tier-jobs { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px; background: var(--bg-2); flex: 1; }
+
+/* Job Card — mirip class card di ROOCBLOG */
+.jc {
+  background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: 10px 13px; display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all 0.2s; min-width: 152px;
+}
+.jc:hover {
+  border-color: var(--gold);
+  background: var(--bg-4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--gold-d);
+}
+.ji {
+  /* Container gambar job — ganti konten dengan <img> saat asset tersedia */
+  width: 40px; height: 40px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  background: var(--bg-4); border: 1px solid var(--border);
+  overflow: hidden;
+}
+.ji img { width: 100%; height: 100%; object-fit: contain; }
+.jn { font-size: 12px; font-weight: 700; color: var(--text); }
+.jr { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+.jtags { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px; }
+
+/* Tags */
+.tag { font-size: 9px; padding: 1px 6px; border-radius: var(--r-full); font-weight: 700; }
+.tag-melee   { background: rgba(239,68,68,.15);   color: #fca5a5;  border: 1px solid rgba(239,68,68,.25); }
+.tag-magic   { background: rgba(139,92,246,.15);  color: #c4b5fd;  border: 1px solid rgba(139,92,246,.25); }
+.tag-support { background: rgba(16,185,129,.15);  color: #6ee7b7;  border: 1px solid rgba(16,185,129,.25); }
+.tag-ranged  { background: rgba(59,130,246,.15);  color: #93c5fd;  border: 1px solid rgba(59,130,246,.25); }
+.tag-tank    { background: rgba(245,158,11,.15);  color: #fcd34d;  border: 1px solid rgba(245,158,11,.25); }
+.tag-summon  { background: rgba(20,184,166,.15);  color: #5eead4;  border: 1px solid rgba(20,184,166,.25); }
+.tag-utility { background: rgba(212,168,67,.15);  color: var(--gold-l); border: 1px solid rgba(212,168,67,.25); }
+.tag-buff    { background: rgba(139,92,246,.10);  color: #a78bfa;  border: 1px solid rgba(139,92,246,.2); }
+
+/* =============================================
+   MODAL — detail popup job
+   ============================================= */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(6,6,14,0.88); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.mdl {
+  background: var(--bg-2); border: 1px solid var(--border-2);
+  border-radius: var(--r-xl); width: 100%; max-width: 800px;
+  max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.8);
+}
+.mhdr { padding: 20px 24px 0; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.mhdr-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.m-ico {
+  /* Container gambar job besar di modal */
+  width: 56px; height: 56px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; background: var(--bg-3); border: 1px solid var(--border-2);
+  flex-shrink: 0; overflow: hidden;
+}
+.m-ico img { width: 100%; height: 100%; object-fit: contain; }
+.m-name { font-family: var(--font-display); font-size: 20px; color: var(--gold); font-weight: 700; }
+.m-role { font-size: 11px; color: var(--text-3); margin-top: 3px; font-weight: 500; }
+.mcls {
+  margin-left: auto; width: 30px; height: 30px; border-radius: var(--r-sm);
+  background: none; border: 1px solid var(--border); color: var(--text-3);
+  cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.mcls:hover { color: var(--red); border-color: rgba(239,68,68,.4); }
+
+/* PVE/PVP Toggle */
+.mode-tgl {
+  display: flex; margin-bottom: 14px; border-radius: var(--r-md);
+  overflow: hidden; border: 1px solid var(--border); width: fit-content;
+}
+.mb {
+  background: var(--bg-3); border: none; color: var(--text-3);
+  padding: 6px 18px; cursor: pointer; font-family: var(--font-body);
+  font-size: 12px; font-weight: 700; transition: all 0.15s;
+}
+.mb.pve.active  { background: rgba(16,185,129,.15); color: #34d399; }
+.mb.pvp.active  { background: rgba(239,68,68,.15);  color: #f87171; }
+.mb.cust.active { background: rgba(139,92,246,.15); color: #a78bfa; }
+
+/* Modal Tabs */
+.mtabs { display: flex; gap: 2px; flex-shrink: 0; }
+.mtab {
+  background: none; border: none; color: var(--text-3);
+  padding: 7px 14px; cursor: pointer; font-family: var(--font-body);
+  font-size: 11px; font-weight: 700; border-radius: 8px 8px 0 0;
+  border: 1px solid transparent; border-bottom: none;
+  transition: all 0.15s; margin-bottom: -1px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.mtab:hover { color: var(--text-2); }
+.mtab.active {
+  color: var(--gold); background: var(--bg-3);
+  border-color: var(--border-2); border-bottom: 1px solid var(--bg-3);
+}
+.mbody { flex: 1; overflow-y: auto; padding: 20px 24px 24px; background: var(--bg-3); }
+.tbc { display: none; }
+.tbc.active { display: block; }
+
+/* =============================================
+   MODAL INNER COMPONENTS
+   ============================================= */
+.desc-box {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 14px 16px;
+  margin-bottom: 14px; line-height: 1.8; font-size: 13px; color: var(--text-2);
+}
+.slbl {
+  font-size: 10px; font-weight: 700; color: var(--text-3);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
+}
+.pc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.pros {
+  background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.2);
+  border-radius: var(--r-md); padding: 12px;
+}
+.cons {
+  background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.2);
+  border-radius: var(--r-md); padding: 12px;
+}
+.pct { font-size: 11px; font-weight: 700; margin-bottom: 7px; }
+.pros .pct { color: #34d399; }
+.cons .pct { color: #f87171; }
+.pci { font-size: 11px; color: var(--text-3); line-height: 1.7; padding: 2px 0; display: flex; gap: 5px; }
+
+/* Stat bars */
+.sg { display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; margin-bottom: 14px; }
+.sb { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 8px 5px; text-align: center; }
+.sbn { font-size: 9px; color: var(--text-3); font-weight: 700; margin-bottom: 4px; }
+.sbr { height: 4px; border-radius: 2px; background: var(--bg-4); overflow: hidden; margin-bottom: 4px; }
+.sbf { height: 100%; border-radius: 2px; }
+.sbv { font-size: 11px; color: var(--gold-l); font-weight: 700; font-family: var(--font-display); }
+
+/* Mode badge */
+.mbg {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: var(--r-full);
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px;
+}
+.mbg.pve  { background: rgba(16,185,129,.12);  color: #34d399;  border: 1px solid rgba(16,185,129,.3); }
+.mbg.pvp  { background: rgba(239,68,68,.12);   color: #f87171;  border: 1px solid rgba(239,68,68,.3); }
+.mbg.cust { background: rgba(139,92,246,.12);  color: #a78bfa;  border: 1px solid rgba(139,92,246,.3); }
+
+/* Build card */
+.bcard { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px; margin-bottom: 10px; }
+.bname { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.bdesc { font-size: 12px; color: var(--text-3); line-height: 1.65; margin-bottom: 10px; }
+.bstat {
+  font-size: 12px; color: var(--gold-l); background: var(--gold-glow);
+  padding: 7px 10px; border-radius: var(--r-sm); margin-bottom: 8px; font-weight: 600;
+  border: 1px solid rgba(212,168,67,.2);
+}
+.erow { display: flex; flex-wrap: wrap; gap: 5px; }
+.ec {
+  padding: 3px 8px; border-radius: var(--r-sm); font-size: 10px; font-weight: 600;
+  background: var(--bg-3); border: 1px solid var(--border); color: var(--text-3);
+}
+
+/* Skill reco */
+.srec { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px; margin-bottom: 8px; }
+.srhdr { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.srn { font-size: 12px; font-weight: 700; flex: 1; }
+.srlvl { font-family: var(--font-display); font-size: 12px; color: var(--gold); font-weight: 700; }
+.srreason { font-size: 11px; font-weight: 600; margin-top: 2px; }
+
+/* Card Rec */
+.crec {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 12px; margin-bottom: 8px;
+}
+.cri {
+  /* Container gambar kartu di modal */
+  width: 46px; height: 46px; border-radius: var(--r-sm);
+  background: var(--bg-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0; overflow: hidden;
+}
+.cri img { width: 100%; height: 100%; object-fit: contain; }
+.crn { font-size: 12px; font-weight: 700; }
+.crslot { font-size: 9px; color: #a78bfa; font-weight: 700; margin-top: 1px; }
+.creff { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.5; }
+.crwhy { font-size: 10px; font-weight: 700; margin-top: 4px; }
+.crwhy.pve { color: #34d399; }
+.crwhy.pvp { color: #f87171; }
+.pb { padding: 2px 7px; border-radius: var(--r-full); font-size: 9px; font-weight: 800; margin-left: auto; flex-shrink: 0; }
+.pb-w { background: rgba(239,68,68,.2);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+.pb-r { background: var(--gold-glow); color: var(--gold-l); border: 1px solid rgba(212,168,67,.3); }
+.pb-o { background: rgba(100,100,130,.2); color: var(--text-3); border: 1px solid var(--border); }
+
+/* Party */
+.pri { display: flex; align-items: flex-start; gap: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px; margin-bottom: 8px; }
+.prii {
+  width: 40px; height: 40px; border-radius: var(--r-md);
+  background: var(--bg-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.syn { background: var(--gold-glow); border: 1px solid rgba(212,168,67,.2); border-radius: var(--r-md); padding: 12px; margin-top: 6px; }
+.synt { font-size: 10px; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
+
+/* =============================================
+   SKILL TREE PAGE
+   ============================================= */
+.tree-wrap { display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
+.tree-jlist {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px;
+  position: sticky; top: 68px; height: fit-content;
+}
+.tree-jitem {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+  border-radius: var(--r-sm); cursor: pointer; margin-bottom: 3px;
+  transition: all 0.15s; border-left: 2px solid transparent;
+}
+.tree-jitem:hover { background: var(--bg-3); }
+.tree-jitem.active { background: var(--bg-3); border-left-color: var(--gold); color: var(--gold); }
+.tree-jitem .ji-sm { font-size: 18px; width: 26px; text-align: center; }
+
+/* Skill Tree Columns */
+.tree-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.tree-col { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.tc-hdr {
+  background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.tc-icon { font-size: 22px; flex-shrink: 0; }
+.tc-name { font-family: var(--font-display); font-size: 13px; color: var(--gold); font-weight: 700; }
+.tc-sub { font-size: 9px; color: var(--text-3); margin-top: 1px; letter-spacing: 0.5px; }
+.sp-bar { background: var(--bg); border-radius: 3px; height: 5px; overflow: hidden; margin-top: 7px; }
+.sp-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold-d), var(--gold)); transition: width 0.25s; }
+.sp-txt { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-3); margin-top: 3px; }
+.tc-skills { padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+
+/* Skill Item */
+.sk { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 10px; transition: border-color 0.15s; }
+.sk:hover { border-color: var(--border-3); }
+.sk.locked { opacity: 0.3; }
+.sk.maxed { border-color: rgba(212,168,67,.5); background: rgba(212,168,67,.04); }
+.sk-top { display: flex; align-items: center; gap: 7px; }
+.sk-ico { font-size: 16px; flex-shrink: 0; width: 24px; text-align: center; }
+.sk-name { font-size: 11px; font-weight: 700; flex: 1; line-height: 1.3; }
+.sk-ctrl { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.lvb {
+  width: 22px; height: 22px; border-radius: 5px; border: 1px solid var(--border);
+  background: var(--bg-2); color: var(--gold); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-family: var(--font-body); line-height: 1;
+}
+.lvb:hover:not(:disabled) { background: var(--gold-glow); border-color: var(--gold); }
+.lvb:disabled { opacity: 0.2; cursor: not-allowed; }
+.sk-lvl { text-align: center; min-width: 30px; }
+.sk-num { font-family: var(--font-display); font-size: 13px; color: var(--gold); font-weight: 700; }
+.sk-max { font-size: 9px; color: var(--text-3); }
+.sk-desc { font-size: 10px; color: var(--text-3); margin-top: 5px; line-height: 1.5; }
+.sk-req { font-size: 9px; color: rgba(239,100,80,.9); margin-top: 2px; }
+
+/* =============================================
+   CUSTOM BUILD PAGE
+   ============================================= */
+.cb-wrap { display: grid; grid-template-columns: 220px 1fr 230px; gap: 16px; }
+.cb-panel { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; }
+.cb-title { font-family: var(--font-display); font-size: 13px; color: var(--gold); margin-bottom: 12px; font-weight: 700; }
+
+/* Stat sliders */
+.stat-row2 { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+.stat-lbl { font-size: 11px; font-weight: 700; color: var(--text-3); width: 32px; flex-shrink: 0; }
+.stat-sl {
+  flex: 1; height: 3px; -webkit-appearance: none; appearance: none;
+  background: var(--bg-4); border-radius: 2px; outline: none;
+}
+.stat-sl::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--gold); cursor: pointer; border: 2px solid var(--gold-d);
+}
+.stat-in {
+  width: 42px; height: 26px; background: var(--bg-3); border: 1px solid var(--border);
+  color: var(--gold-l); text-align: center; border-radius: var(--r-sm);
+  font-family: var(--font-display); font-size: 12px; font-weight: 700; outline: none;
+}
+.stat-in:focus { border-color: var(--gold); }
+
+/* Card selects */
+.card-slot { margin-bottom: 8px; }
+.cs-lbl { font-size: 10px; color: var(--text-3); font-weight: 600; margin-bottom: 3px; }
+.cs-sel {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+  color: var(--text); padding: 5px 8px; border-radius: var(--r-sm);
+  font-family: var(--font-body); font-size: 11px; outline: none; cursor: pointer;
+}
+.cs-sel:focus { border-color: var(--gold); }
+
+/* Job grid in custom build */
+.cb-job-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 14px; }
+.cb-jbtn {
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 8px 4px; text-align: center;
+  cursor: pointer; transition: all 0.15s;
+}
+.cb-jbtn:hover { border-color: var(--border-3); }
+.cb-jbtn.active { border-color: var(--gold); background: var(--gold-glow); }
+.cb-jbtn .cbjn { font-size: 9px; color: var(--text-3); margin-top: 3px; font-weight: 600; line-height: 1.3; }
+
+.cb-tree-wrap { overflow-y: auto; max-height: 68vh; }
+.cb-sum {
+  background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+  border: 1px solid var(--border-2); border-radius: var(--r-md);
+  padding: 14px; margin-top: 12px;
+}
+.cb-sum-name { font-family: var(--font-display); font-size: 15px; color: var(--gold); margin-bottom: 10px; font-weight: 700; }
+.cb-stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 10px; }
+.cb-sv { text-align: center; }
+.cb-svn { font-size: 9px; color: var(--text-3); font-weight: 700; }
+.cb-svv { font-family: var(--font-display); font-size: 15px; color: var(--gold-l); font-weight: 700; }
+.cb-cards-disp { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.cbd-chip {
+  font-size: 10px; padding: 2px 8px; border-radius: var(--r-full);
+  background: var(--gold-glow); border: 1px solid rgba(212,168,67,.3); color: var(--gold-l);
+}
+
+/* =============================================
+   CARD DATABASE PAGE
+   Mirip ROOCBLOG post cards: thumbnail + content
+   ============================================= */
+.cg { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 14px; }
+.ci {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  transition: all 0.2s; cursor: default;
+  position: relative;
+}
+.ci:hover { border-color: var(--gold-d); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.ci::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.ci.cm::before { background: linear-gradient(90deg, #a00, #e83030); }
+.ci.cb::before { background: linear-gradient(90deg, #9a5000, #d97020); }
+.ci.cn::before { background: linear-gradient(90deg, #1040a0, #3b82f6); }
+.cibg { position: absolute; top: 10px; right: 10px; padding: 2px 7px; border-radius: var(--r-full); font-size: 9px; font-weight: 800; }
+.cibm  { background: rgba(239,68,68,.2);  color: #f87171; }
+.cibmb { background: rgba(245,158,11,.2); color: #fcd34d; }
+.cibn  { background: rgba(59,130,246,.2); color: #93c5fd; }
+
+/* Card image area */
+.card-img-wrap {
+  /* Container untuk foto kartu — ganti emoji dengan <img> saat asset tersedia */
+  width: 60px; height: 60px;
+  border-radius: var(--r-sm);
+  background: var(--bg-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin: 14px auto 10px;
+  overflow: hidden;
+}
+.card-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+/* =============================================
+   BROWSE BY CLASS SECTION
+   Mirip ROOCBLOG: pill chips dengan icon + nama
+   ============================================= */
+.class-browse-grid {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 48px;
+}
+.class-chip {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-full); padding: 7px 16px;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+  color: var(--text-2); font-size: 12px; font-weight: 600;
+}
+.class-chip:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-glow); }
+
+/* =============================================
+   QUICK NAV CARDS
+   Mirip ROOCBLOG: 4 kotak icon + label di hero bottom
+   ============================================= */
+.quick-nav { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 40px; }
+.qn-card {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px; text-align: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.qn-card:hover { border-color: var(--gold); background: var(--bg-3); transform: translateY(-2px); }
+.qn-ico { font-size: 24px; margin-bottom: 8px; }
+.qn-label { font-size: 11px; font-weight: 700; color: var(--text); }
+.qn-sub { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* =============================================
+   FOOTER
+   Mirip ROOCBLOG: dark, multi-column, disclaimer
+   ============================================= */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  background: var(--bg-2);
+  padding: 40px 5% 24px;
+  margin-top: 60px;
+}
+.footer-inner { max-width: 1180px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+.footer-brand .logo-text { font-size: 18px; margin-bottom: 8px; display: block; }
+.footer-desc { font-size: 12px; color: var(--text-3); line-height: 1.7; max-width: 260px; margin-bottom: 14px; }
+.footer-col h4 { font-family: var(--font-display); font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 7px; }
+.footer-col a { font-size: 12px; color: var(--text-3); text-decoration: none; transition: color 0.15s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 20px; }
+.footer-disclaimer { font-size: 11px; color: var(--text-3); line-height: 1.7; margin-bottom: 10px; }
+.footer-copy { font-size: 11px; color: var(--text-3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+/* Poring mascot pojok kanan bawah */
+.poring-mascot {
+  position: fixed; bottom: 20px; right: 20px; z-index: 100;
+  /*
+    GANTI DENGAN:
+    background: url('assets/poring.png') center/contain no-repeat;
+    width: 80px; height: 80px;
+  */
+  width: 48px; height: 48px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 24px;
+  cursor: pointer; transition: transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.poring-mascot:hover { transform: scale(1.1) translateY(-3px); }
+
+/* =============================================
+   UTILITY BUTTONS
+   ============================================= */
+.btn-reset {
+  background: none; border: 1px solid rgba(239,68,68,.35); color: #f87171;
+  padding: 5px 13px; border-radius: var(--r-sm); cursor: pointer;
+  font-size: 11px; font-family: var(--font-body); font-weight: 700; transition: all 0.18s;
+}
+.btn-reset:hover { background: rgba(239,68,68,.1); }
+.btn-gold {
+  background: var(--gold-glow); border: 1px solid rgba(212,168,67,.4);
+  color: var(--gold); padding: 7px 14px; border-radius: var(--r-sm);
+  cursor: pointer; font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  transition: all 0.18s;
+}
+.btn-gold:hover { background: rgba(212,168,67,.2); }
+.btn-cust {
+  background: rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.3);
+  color: #a78bfa; padding: 9px 18px; border-radius: var(--r-md);
+  cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 700;
+}
+
+/* =============================================
+   RESPONSIVE — Mobile
+   ============================================= */
+@media (max-width: 1000px) {
+  .cb-wrap { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .tree-wrap { grid-template-columns: 1fr; }
+  .tree-cols { grid-template-columns: 1fr; }
+  .tree-jlist { position: static; }
+  .quick-nav { grid-template-columns: repeat(2,1fr); }
+  .pc { grid-template-columns: 1fr; }
+  .sg { grid-template-columns: repeat(3,1fr); }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .site-header { padding: 0 4%; }
+  .logo-sub { display: none; }
+  .gsearch-wrap { display: none; }
+  .page { padding: 0 4% 60px; }
+  .hero-section { padding: 0 4% 28px; min-height: 260px; }
+  .hero-title { font-size: 22px; }
+  .cb-job-grid { grid-template-columns: repeat(3,1fr); }
+  .quick-nav { grid-template-columns: repeat(2,1fr); }
+  .poring-mascot { width: 40px; height: 40px; font-size: 20px; }
+}
